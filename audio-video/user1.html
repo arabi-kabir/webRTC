@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+
+    <title>Document</title>
+</head>
+<body>
+   <!-- Connection -->
+    <div class="container p-3">
+        <p id="selfPeerid" onclick="copyID()">Selft Peer ID (user1) :</p>
+        <p class="text-primary">Connection status : <span id="connectionStatus" class="text-success"></span> </p>
+        <input id="partnerPeerid" type="text" placeholder="Partner peer id" class="form-control mb-3" />
+
+        <button id="connectBtn" class="btn btn-primary">Connect</button>
+    </div>
+
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-6">
+                <h6>user1 preview</h6>
+                <video class="w-100 p-2" id="user1Preview"></video>
+                <button id="makeCall" class="btn btn-primary">Make call</button>
+            </div>
+
+            <div class="col-md-6">
+                <h6>user2 preview</h6>
+                <video class="w-100 p-2" id="user2Preview"></video>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Scripts -->
+    <script src="js/jquery-3.6.0.min.js"></script>
+    <script src="js/peer.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+
+    <script>
+        let peer = new Peer()
+        peer.on('open', function(peerId) {
+            $('#selfPeerid').html("Self Peer ID (user1) : " + peerId)
+        })
+
+        // Connection
+        $('#connectBtn').on('click', function() {
+            let partnerPeerId = $('#partnerPeerid').val()
+            let conn = peer.connect(partnerPeerId)
+            conn.on('open', function() {
+                $('#connectionStatus').html('success')
+            })
+        })
+
+        // Make call
+        let mediaConstraints = {'video': true, 'aiudo': true}
+
+        $('#makeCall').on('click', function() {
+            navigator.mediaDevices.getUserMedia(mediaConstraints)
+            .then(function(stream) {
+                // my stream preview
+                let user1Preview = document.getElementById('user1Preview')
+                user1Preview.srcObject = stream
+                user1Preview.play()
+
+                // init call
+                let partnerPeerId = $('#partnerPeerid').val()
+                let call = peer.call(partnerPeerId, stream)
+
+                call.on('stream', function(remoteStream) {
+                    // user2Preview
+                    let user2Preview = document.getElementById('user2Preview')
+                    user2Preview.srcObject = remoteStream
+                    user2Preview.play()
+                })
+            })
+            .catch(function(error) {
+                alert(error)
+            })
+        })
+    </script>
+</body>
+</html>
