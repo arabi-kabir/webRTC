@@ -11,17 +11,30 @@
 
     <p id="data"></p>
 
+    <input type="text" id="name" />
+    <button id="sendBtn" onclick="send()">Send</button>
+
     <script src="/socket.io/socket.io.js"></script>
 
     <script>
-        let socket = io()
+        let socket = io('/sell')
 
-        socket.on('message', function(data) {
-            console.log(data);
+        // socket.on('myEvent', function(data) {
+        //     console.log(data);
 
-            // document.write(data)
+        //     document.getElementById('data').innerHTML = (data)
+        // })
 
-            document.getElementById('data').innerHTML = (data)
+        // function send() {
+        //     let socket = io()
+
+        //     let name = document.getElementById('name').value;
+            
+        //     socket.emit('myEvent_1', name)
+        // }
+
+        socket.on('myBroadcast', function(data) {
+            document.getElementById('data').innerHTML = data
         })
     </script>
 </body>

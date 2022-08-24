@@ -11,26 +11,51 @@ const expressServer = http.createServer(app)
 
 const io = new Server(expressServer)
 
-io.on('connection', function(socket) {
-    console.log('new user connected');
+let buyNsp = io.of('/buy')
+let sellNsp = io.of('/sell')
+
+buyNsp.on('connection', function(socket) {
+    buyNsp.emit('myBroadcast', 'hello every buy') 
+})
+
+sellNsp.on('connection', function(socket) {
+    sellNsp.emit('myBroadcast', 'hello every sell 2') 
+})
+
+// io.on('connection', function(socket) {
+    // console.log('new user connected');
 
     // setTimeout(function(){
     //     socket.send('hello brother')
     // }, 5000)
 
-    setInterval(function(){
-        let d = new Date()
-        let t = d.getTime()
+    // setInterval(function(){
+    //     let d = new Date()
+    //     let t = d.getTime()
 
-        socket.send(t)
-    }, 1000)
+    //     socket.send(t)
 
-    socket.on('disconnect', function() {
-        console.log('user disconnected');
-    }) 
+    //     socket.emit('myEvent', t)
+
+    // }, 100)
+
+    // socket.on('disconnect', function() {
+    //     console.log('user disconnected');
+    // }) 
+
+    // socket.on('message', function(message) {
+    //     console.log(message);
+    // }) 
+
+    /* Broadcast */
+
+    // let buyNsp = io.of('/buy')
+    // let sellNsp = io.of('/sell')
+
+    // io.sockets.emit('myBroadcast', 'hello every one 2 3') 
 
 
-})
+// })
 
 
 
